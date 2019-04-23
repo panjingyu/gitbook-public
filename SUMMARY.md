@@ -4,6 +4,7 @@
 * [MIT-6.828-Operating Systems](mit-6.828-operating-systems.md)
 * [Tools](tools.md)
 * [Latex踩坑](latex-cai-keng.md)
+* [关于音乐格式整理](guan-yu-yin-le-ge-shi-zheng-li.md)
 
 ## 日麻理论
 
