@@ -3,8 +3,8 @@
 * [Initial page](README.md)
 * [MIT-6.828-Operating Systems](mit-6.828-operating-systems.md)
 * [Tools](tools.md)
-* [Latex踩坑](latex-cai-keng.md)
-* [关于音乐格式整理](guan-yu-yin-le-ge-shi-zheng-li.md)
+* [Latex踩坑](latex-traps.md)
+* [关于音乐格式整理](music-file-format.md)
 
 ## 日麻理论
 
@@ -17,5 +17,5 @@
 
 ## Personal Cloud
 
-* [个人邮箱搭建](personal-cloud/ge-ren-you-xiang-da-jian.md)
+* [个人邮箱搭建](personal-cloud/personal-email.md)
 
