@@ -5,6 +5,7 @@
 * [Tools](tools.md)
 * [Latex踩坑](latex-traps.md)
 * [关于音乐格式整理](music-file-format.md)
+* [Web服务器搭建](web-fu-wu-qi-da-jian.md)
 
 ## 日麻理论
 
