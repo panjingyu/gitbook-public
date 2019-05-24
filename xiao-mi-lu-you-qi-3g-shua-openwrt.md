@@ -1,0 +1,91 @@
+# 小米路由器3G刷openwrt
+
+## breed刷Mi开发版（已开启ssh）
+
+> 删除normal\_firmware\_md5 6adeca490b4de682e8d944e380b8fa03，否则可能导致重启后无法进入小米开发版的问题。
+>
+> 要刷固件+编程器固件（full），我还刷了EEPROM（不过这个应该是包含在编程器固件里了？具体原理不明）
+
+首先在小米路由器web页面上完成初始化设置（随意写）。
+
+然后ssh进入，root密码见[https://d.miwifi.com/rom/ssh](https://d.miwifi.com/rom/ssh)。我的是`fe5578ed`。
+
+## Mi开发版刷openwrt
+
+Windows下用pscp上传openwrt固件到`/tmp`，注意端口号（默认端口号可能不为22，看是否改动了putty配置的ssh默认端口号）。注意需要加`-scp`选项，因为路由器不支持pscp默认的`-sftp`协议。
+
+进入`/tmp`，刷入openwrt固件：
+
+```text
+ mtd write openwrt-ramips-mt7621-mir3g-squashfs-kernel1.bin kernel0
+ mtd write openwrt-ramips-mt7621-mir3g-squashfs-kernel1.bin kernel1
+ mtd write openwrt-ramips-mt7621-mir3g-squashfs-rootfs0.bin rootfs0
+ reboot
+```
+
+
+
+可以在breed中设置环境变量：`xiaomi.r3g.bootfw` 2
+
+这一项用来选择启动的内核。反正我在上一步把kernel0和1都刷成openwrt了，就无所谓。
+
+
+
+有线连入路由器，ssh连192.168.1.1，马上修改passwd。
+
+为了联网，可用手机热点：关闭所有天线，选择对应热点的天线（如热点是2.4G则选择支持2.4G的天线），接入热点后可成功`opkg update`。
+
+## 关于L2TP
+
+```text
+ opkg install xl2tpd
+```
+
+添加interface，设置L2TP协议（注意MAC地址是否与申请时一致，LAN与WAN具有不同MAC地址！）
+
+防火墙LAN-&gt;WAN勾选MSS（据说不勾会影响到一些应用，原理未知）
+
+## 关于ipv6
+
+通过 odhcpd 实现 IPv6 中继：
+
+登录网页管理界面，在 Network-&gt;Interfaces 页面底下有 Global network options-&gt;IPv6 ULA-Prefix，这里有一个随机的 fd 开头的 /64 IPv6 地址段（如 fddd:ddd1:9439::/48 fd93:8590:feaa::/48 ），清空该地址并保存。
+
+修改 /etc/config/dhcp 文件，添加如下部分，使用无状态地址自动配置（ SLAAC ） IPv6，不使用 DHCPv6。
+
+```text
+ onfig dhcp 'lan'
+ option dhcpv6 'disabled'
+ option ra 'relay'
+ option ndp 'relay'
+ config dhcp 'wan6'
+ option interfere 'wan'
+ option dhcpv6 'disabled'
+ option ra 'relay'
+ option ndp 'relay'
+ option master '1'
+```
+
+重启 odhcpd 服务：
+
+```text
+ /etc/init.d/odhcpd restart
+```
+
+在 /etc/rc.local 中添加本地启动脚本：
+
+```text
+ sleep 30
+ /etc/init.d/odhcpd restart
+```
+
+## 关于静态路由
+
+首先可以把10.0.0.0\8对应的学校内网地址全都绕开L2TP，这样就已经解决90%以上情况下的问题了。
+
+但是部分学校内网地址是其他网段的，需要另外配置。如何取得学校的网段信息是个问题，也许可以看一下easyconnect等官方RVPN客户端，看看里面的路由表。
+
+另外也遇到有人走VPN挂PT，这时候即使我配置了静态路由通过内网访问它，依然会被它的VPN限速。这里静态路由只能保证我避开自己的VPN带宽占用。
+
+98上也有人贴了许多推荐配置的路由表，但是数据比较久远了（不过大部分是能用的）。本着宁缺毋滥的原则，我打算只添加经过自己验证的静态路由项；否则可能遇到一些网站上不去的问题（部分杭州的校外网站与学校网站的网段大致相同，路由需要更精细的划分）。
+
