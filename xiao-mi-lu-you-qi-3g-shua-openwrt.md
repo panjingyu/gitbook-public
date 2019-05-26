@@ -8,7 +8,7 @@
 
 首先在小米路由器web页面上完成初始化设置（随意写）。
 
-然后ssh进入，root密码见[https://d.miwifi.com/rom/ssh](https://d.miwifi.com/rom/ssh)。我的是`fe5578ed`。
+然后ssh进入，root密码见[https://d.miwifi.com/rom/ssh](https://d.miwifi.com/rom/ssh)。
 
 ## Mi开发版刷openwrt
 
