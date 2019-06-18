@@ -45,6 +45,10 @@ Windows下用pscp上传openwrt固件到`/tmp`，注意端口号（默认端口�
 
 防火墙LAN-&gt;WAN勾选MSS（据说不勾会影响到一些应用，原理未知）
 
+## 关于DNS
+
+openwrt默认开启了`Rebind protection`选项，导致路由器拒绝返回A记录为私有地址IP的DNS response。关闭该选项即可正常浏览校内网页。
+
 ## 关于ipv6
 
 通过 odhcpd 实现 IPv6 中继：
@@ -54,16 +58,17 @@ Windows下用pscp上传openwrt固件到`/tmp`，注意端口号（默认端口�
 修改 /etc/config/dhcp 文件，添加如下部分，使用无状态地址自动配置（ SLAAC ） IPv6，不使用 DHCPv6。
 
 ```text
- onfig dhcp 'lan'
- option dhcpv6 'disabled'
- option ra 'relay'
- option ndp 'relay'
+ config dhcp 'lan'
+   option dhcpv6 'disabled'
+   option ra 'relay'
+   option ndp 'relay'
+ 
  config dhcp 'wan6'
- option interfere 'wan'
- option dhcpv6 'disabled'
- option ra 'relay'
- option ndp 'relay'
- option master '1'
+   option interface 'wan'
+   option dhcpv6 'disabled'
+   option ra 'relay'
+   option ndp 'relay'
+   option master '1'
 ```
 
 重启 odhcpd 服务：
@@ -88,4 +93,8 @@ Windows下用pscp上传openwrt固件到`/tmp`，注意端口号（默认端口�
 另外也遇到有人走VPN挂PT，这时候即使我配置了静态路由通过内网访问它，依然会被它的VPN限速。这里静态路由只能保证我避开自己的VPN带宽占用。
 
 98上也有人贴了许多推荐配置的路由表，但是数据比较久远了（不过大部分是能用的）。本着宁缺毋滥的原则，我打算只添加经过自己验证的静态路由项；否则可能遇到一些网站上不去的问题（部分杭州的校外网站与学校网站的网段大致相同，路由需要更精细的划分）。
+
+## 遇到的问题
+
+最近遇到了路由器有时突然重启的问题。`logread`命令似乎不能显示重启前的log，疑似丢失。现修改log buffer size为0（buffer中的部分就是掉电会丢失的部分），并设置remote syslog server（否则本地文件依然会丢失，猜测是写入了flash的缓存中？），等待问题复现。
 

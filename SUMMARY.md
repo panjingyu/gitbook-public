@@ -9,7 +9,7 @@
 * [小米路由器3G刷openwrt](xiao-mi-lu-you-qi-3g-shua-openwrt.md)
 * [双系统配置note](shuang-xi-tong-pei-zhi-note.md)
 
-## 日麻理论
+## 日麻理论 <a id="ri-ma"></a>
 
 * [学习顺序](ri-ma/xue-xi-shun-xu.md)
 * [おしえて！科学する麻雀](ri-ma/oshietesuru/README.md)
