@@ -29,11 +29,20 @@ Windows下用pscp上传openwrt固件到`/tmp`，注意端口号（默认端口�
 
 这一项用来选择启动的内核。反正我在上一步把kernel0和1都刷成openwrt了，就无所谓。
 
+有线连入路由器，浏览器打开`openwrt.lan`站点后，在`system->backup/flash firmware`菜单中，将[下载](https://downloads.openwrt.org/releases/18.06.2/targets/ramips/mt7621/openwrt-18.06.2-ramips-mt7621-mir3g-squashfs-sysupgrade.tar)好并校验后的小米路由器3g专用的系统升级tar文件上传，升级固件。
+
+升级完重启后有线连入路由器，ssh连192.168.1.1，马上修改passwd。
+
+~~为了联网，可用手机热点：关闭所有天线，选择对应热点的天线（如热点是2.4G则选择支持2.4G的天线），接入热点后可成功`opkg update`。~~
+
+如果只是为了`opkg update`，更推荐的方式是使用可直连的镜像网站。如`mirrors.zju.edu.cn/openwrt`。
+
+更换opkg源的方法是：
+
+* 在`/etc/opkg`路径下，备份`distfeeds.conf`
+* 将`distfeeds.conf`中`downloads.openwrt.org`部分替换为镜像站点，如`mirrors.zju.edu.cn/openwrt`
 
 
-有线连入路由器，ssh连192.168.1.1，马上修改passwd。
-
-为了联网，可用手机热点：关闭所有天线，选择对应热点的天线（如热点是2.4G则选择支持2.4G的天线），接入热点后可成功`opkg update`。
 
 ## 关于L2TP
 
@@ -94,7 +103,7 @@ openwrt默认开启了`Rebind protection`选项，导致路由器拒绝返回A�
 
 98上也有人贴了许多推荐配置的路由表，但是数据比较久远了（不过大部分是能用的）。本着宁缺毋滥的原则，我打算只添加经过自己验证的静态路由项；否则可能遇到一些网站上不去的问题（部分杭州的校外网站与学校网站的网段大致相同，路由需要更精细的划分）。
 
-## 遇到的问题
 
-最近遇到了路由器有时突然重启的问题。`logread`命令似乎不能显示重启前的log，疑似丢失。现修改log buffer size为0（buffer中的部分就是掉电会丢失的部分），并设置remote syslog server（否则本地文件依然会丢失，猜测是写入了flash的缓存中？），等待问题复现。
+
+~~~~
 
