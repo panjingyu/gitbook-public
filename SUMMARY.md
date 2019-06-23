@@ -6,7 +6,7 @@
 * [Latex踩坑](latex-traps.md)
 * [关于音乐格式整理](music-file-format.md)
 * [Web服务器搭建](web-fu-wu-qi-da-jian.md)
-* [小米路由器3G刷openwrt](xiao-mi-lu-you-qi-3g-shua-openwrt.md)
+* [小米路由器3G刷固件](xiao-mi-lu-you-qi-3g-shua-openwrt.md)
 * [双系统配置note](shuang-xi-tong-pei-zhi-note.md)
 
 ## 日麻理论 <a id="ri-ma"></a>
